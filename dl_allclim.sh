@@ -16,6 +16,9 @@ while read variables; do
       then bash dl_historical.sh $variables $2 &
     fi
 done < "$1"
+
+wait
+
 echo "Time: $(date). (model $2) - End download of historical data" >> dlclim.log
 
 # Loop on all time periods to download future data from model $2, ssp126
@@ -25,6 +28,11 @@ while read timeperiod; do
         if [ ! -f $2/${var}_${timeperiod}_ssp126.nc ]
           then bash dl_climssptime.sh $var $2 ssp126 $timeperiod &
         fi
-        echo "Time: $(date). (model $2) - End download of ssp126, $timeperiod" >> dlclim.log
     done < "$1"
+    wait
+    echo "Time: $(date). (model $2) - End download of ssp126, $timeperiod" >> dlclim.log
 done < "$3"
+
+wait
+
+echo "Time: $(date). End script" >> dlclim.log
