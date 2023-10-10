@@ -23,7 +23,7 @@ echo "Time: $(date). (model $2) - End download of historical data" >> dlclim.log
 
 # Loop on all time periods to download future data from model $2, ssp126
 while read timeperiod; do
-    # Loop on all variables to download data from model $2 (historical data)
+    # Loop on all variables to download data from model $2 
     while read var; do
         if [ ! -f $2/${var}_${timeperiod}_ssp126.nc ]
           then bash dl_climssptime.sh $var $2 ssp126 $timeperiod &
@@ -31,6 +31,34 @@ while read timeperiod; do
     done < "$1"
     wait
     echo "Time: $(date). (model $2) - End download of ssp126, $timeperiod" >> dlclim.log
+done < "$3"
+
+wait
+
+# Loop on all time periods to download future data from model $2, ssp370
+while read timeperiod; do
+    # Loop on all variables to download data from model $2 
+    while read var; do
+        if [ ! -f $2/${var}_${timeperiod}_ssp370.nc ]
+          then bash dl_climssptime.sh $var $2 ssp370 $timeperiod &
+        fi
+    done < "$1"
+    wait
+    echo "Time: $(date). (model $2) - End download of ssp370, $timeperiod" >> dlclim.log
+done < "$3"
+
+wait
+
+# Loop on all time periods to download future data from model $2, ssp585
+while read timeperiod; do
+    # Loop on all variables to download data from model $2 
+    while read var; do
+        if [ ! -f $2/${var}_${timeperiod}_ssp585.nc ]
+          then bash dl_climssptime.sh $var $2 ssp585 $timeperiod &
+        fi
+    done < "$1"
+    wait
+    echo "Time: $(date). (model $2) - End download of ssp585, $timeperiod" >> dlclim.log
 done < "$3"
 
 wait
