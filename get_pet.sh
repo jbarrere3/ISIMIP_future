@@ -35,8 +35,8 @@ cdo subc,273.15 $input_file_tas "${st}tas.nc"
 # Calculate vapor pressure deficit
 cdo expr,'esTmax = (0.6108*exp((17.27*tasmax)/(tasmax+237.3)))' "${st}tasmax.nc" "${st}esTmax.nc"
 cdo expr,'esTmin = (0.6108*exp((17.27*tasmin)/(tasmin+237.3)))' "${st}tasmin.nc" "${st}esTmin.nc"
-cdo expr,'es = (esTmax + esTmin)/2' "${st}esTmax.nc" "${st}esTmin.nc" "${st}es.nc"
-cdo expr,'vpd = es*(1 - hurs/100)' "${st}es.nc" $input_file_hurs "${st}vpd.nc"
+cdo expr,'es = (esTmax + esTmin)/2' -selvar,esTmax "${st}esTmax.nc" -selvar,esTmin "${st}esTmin.nc" "${st}es.nc"
+cdo expr,'vpd = es*(1 - hurs/100)' -selvar,es "${st}es.nc" -selvar,hurs $input_file_hurs "${st}vpd.nc"
 # cdo expr,'Delta = (4098*0.6108*exp((17.27*(tas-273.15))/((tas-273.15)+237.3)))/(((tas-273.15)+237.3)^2)' $input_file_tas $2_$1_Delta.nc
 # cdo expr,'Pr = (4098*0.6108*exp((17.27*(tas-273.15))/((tas-273.15)+237.3)))/(((tas-273.15)+237.3)^2)' $input_file_tas $2_$1_Delta.nc
 
