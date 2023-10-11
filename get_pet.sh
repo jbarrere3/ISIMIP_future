@@ -26,7 +26,7 @@ fi
 
 # Create temporary folder for calculations
 tempdir="${2}_${1}_${3}"
-mkdir tempdir
+mkdir -p tempdir
 
 # Convert from Kelvin to Celsius
 cdo subc,273.15 $input_file_tasmax $tempdir/tasmax.nc
