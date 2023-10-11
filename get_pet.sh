@@ -7,7 +7,7 @@ year1=$(echo "$1" | cut -d '_' -f 1)
 year2=$(echo "$1" | cut -d '_' -f 2)
 
 # Set the input NetCDF file and the output files
-input_file_elevation = "$2/elevation.nc"
+input_file_elevation="$2/elevation.nc"
 if [ "$year2" -lt 2015 ]; then
     input_file_tas="$2/tas_$1.nc"
     input_file_tasmax="$2/tasmax_$1.nc"
@@ -25,7 +25,7 @@ else
 fi
 
 # Create temporary folder for calculations
-tempdir = "${2}_${1}_${3}"
+tempdir="${2}_${1}_${3}"
 mkdir tempdir
 
 # Convert from Kelvin to Celsius
