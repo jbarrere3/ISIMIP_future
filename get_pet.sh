@@ -42,10 +42,10 @@ for ((year = year1; year <= year2; year++)); do
     # Set the output filename for the current year
     # output_file_sgdd="sgdd_$year.nc"
     # output_file_wai="wai_$year.nc"
-    output_file_tmean="tmean_$year.nc"
+    output_file_tmean="tmean_${year}.nc"
 
     # Use CDO to calculate sgdd and wai for the current year
-    cdo yearmean -selyear,$year $tempdir/tasmin_$year.nc $output_file_tmean
+    cdo yearmean -selyear,${year} $tempdir/tasmin_${year}.nc $output_file_tmean
 
     echo "Generated $output_file_sgdd and $output_file_wai"
 done
