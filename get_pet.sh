@@ -25,13 +25,13 @@ else
 fi
 
 # Create temporary folder for calculations
-tempdir = ${2}_${1}_${3}
-mkdir ${2}_${1}_${3}
+tempdir = "${2}_${1}_${3}"
+mkdir tempdir
 
 # Convert from Kelvin to Celsius
 cdo subc,273.15 $input_file_tasmax $tempdir/tasmax_$year.nc
 cdo subc,273.15 $input_file_tasmin $tempdir/tasmin_$year.nc
-cdo subc,273.15 $input_file_tas tas_$year.nc
+cdo subc,273.15 $input_file_tas $tempdir/tas_$year.nc
 
 # cdo expr,'Delta = (4098*0.6108*exp((17.27*(tas-273.15))/((tas-273.15)+237.3)))/(((tas-273.15)+237.3)^2)' $input_file_tas $2_$1_Delta.nc
 # cdo expr,'Pr = (4098*0.6108*exp((17.27*(tas-273.15))/((tas-273.15)+237.3)))/(((tas-273.15)+237.3)^2)' $input_file_tas $2_$1_Delta.nc
