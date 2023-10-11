@@ -6,6 +6,8 @@
 year1=$(echo "$1" | cut -d '_' -f 1)
 year2=$(echo "$1" | cut -d '_' -f 2)
 
+echo "year1 : ${year1}"
+
 # Set the input NetCDF file and the output files
 if [ "$year2" -lt 2015 ]; then
     input_file="$2/tas_$1.nc"
@@ -14,7 +16,7 @@ else
 fi
 
 # Loop through the years 
-for year in {$year1..$year2}; do
+for year in {${year1}..${year2}}; do
 
     # Set the output filename for the current year
     output_file="tmean_$year.nc"
