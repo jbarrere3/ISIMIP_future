@@ -6,7 +6,8 @@
 year1=$(echo "$1" | cut -d '_' -f 1)
 year2=$(echo "$1" | cut -d '_' -f 2)
 
-echo "year1 : ${year1}"
+echo "year1: ${year1}"
+echo "year2: ${year2}"
 
 # Set the input NetCDF file and the output files
 if [ "$year2" -lt 2015 ]; then
@@ -16,7 +17,7 @@ else
 fi
 
 # Loop through the years 
-for year in {${year1}..${year2}}; do
+for ((year = year1; year <= year2; year++)); do
 
     # Set the output filename for the current year
     output_file="tmean_$year.nc"
@@ -27,4 +28,4 @@ for year in {${year1}..${year2}}; do
     echo "Generated $output_file"
 done
 
-echo "All annual temperature files generated in $output_dir"
+echo "All annual temperature files generated in the current directory"
