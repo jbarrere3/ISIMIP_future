@@ -24,10 +24,13 @@ else
     input_file_sfcwind="$2/sfcwind_$1_$3.nc"
 fi
 
+# Start of all files produced
+st="${2}_${1}_${3}_"
+
 # Convert from Kelvin to Celsius
-#cdo subc,273.15 $input_file_tasmax $tempdir/tasmax.nc
-#cdo subc,273.15 $input_file_tasmin $tempdir/tasmin.nc
-cdo subc,273.15 $input_file_tas "${2}_${1}_${3}_tas.nc"
+cdo subc,273.15 $input_file_tasmax "${st}tasmax.nc"
+cdo subc,273.15 $input_file_tasmin "${st}tasmin.nc"
+cdo subc,273.15 $input_file_tas "${st}tas.nc"
 
 # cdo expr,'Delta = (4098*0.6108*exp((17.27*(tas-273.15))/((tas-273.15)+237.3)))/(((tas-273.15)+237.3)^2)' $input_file_tas $2_$1_Delta.nc
 # cdo expr,'Pr = (4098*0.6108*exp((17.27*(tas-273.15))/((tas-273.15)+237.3)))/(((tas-273.15)+237.3)^2)' $input_file_tas $2_$1_Delta.nc
@@ -41,7 +44,7 @@ for ((year = year1; year <= year2; year++)); do
     output_file_tmean="tmean_${year}.nc"
 
     # Use CDO to calculate sgdd and wai for the current year
-    cdo yearmean -selyear,${year} "${2}_${1}_${3}_tas.nc" $output_file_tmean
+    cdo yearmean -selyear,${year} "${st}tas.nc" $output_file_tmean
 
     echo "Generated $output_file_sgdd and $output_file_wai"
 done
@@ -49,4 +52,6 @@ done
 echo "All annual files generated in the current directory"
 
 # remove temporary directory
-rm "${2}_${1}_${3}_tas.nc"
+rm "${st}tas.nc"
+rm "${st}tasmin.nc"
+rm "${st}tasmax.nc"
