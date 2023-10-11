@@ -63,4 +63,13 @@ done < "$3"
 
 wait
 
+# Download altitude data
+if [ ! -f $2/elevation.nc ]
+    then 
+        wget https://files.isimip.org/ISIMIP3a/SecondaryInputData/climate/atmosphere/obsclim/global/daily/historical/W5E5v2.0/orog_W5E5v2.0.nc
+        mv orog_W5E5v2.0.nc $2/elevation.nc
+fi
+
+wait
+
 echo "Time: $(date). End script" >> dlclim.log
