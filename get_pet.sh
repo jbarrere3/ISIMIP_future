@@ -52,7 +52,8 @@ cdo -mulc,118 -addc,0.75 -mulc,0.00002 $input_file_elevation "${st}rso.nc"
 cdo -mulc,0.0000000024515 -add -pow,4 $input_file_tasmax -pow,4 $input_file_tasmin "${st}rnla.nc"
 cdo -addc,0.34 -mulc,-0.14 -pow,0.5 "${st}ea.nc" "${st}rnlb.nc"
 cdo -subc,0.35 -mulc,1.35 -div "${st}rs.nc" "${st}rso.nc" "${st}rnlc.nc"
-cdo mul "${st}rnla.nc" "${st}rnlb.nc" "${st}rnlc.nc" "${st}rnl.nc"
+cdo mul "${st}rnla.nc" "${st}rnlb.nc" "${st}rnlab.nc"
+cdo mul "${st}rnlab.nc" "${st}rnlc.nc" "${st}rnl.nc"
 # - net radiation
 cdo sub "${st}rns.nc" "${st}rnl.nc" "${st}rn.nc"
 # - Remove temporary files
@@ -62,6 +63,7 @@ rm "${st}ea.nc"
 rm "${st}rnla.nc"
 rm "${st}rnlb.nc"
 rm "${st}rnlc.nc"
+rm "${st}rnlab.nc"
 rm "${st}rnl.nc"
 
 #cdo expr,'es = (esTmax + esTmin)/2' -selvar,esTmax "${st}esTmax.nc" -selvar,esTmin "${st}esTmin.nc" "${st}es.nc"
