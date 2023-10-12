@@ -77,7 +77,7 @@ cdo expr,'Gamma = (0.001013*Pr)/(0.622*2.45)' "${st}Pr.nc" "${st}Gamma.nc"
 cdo mulc,0.747132 $input_file_sfcwind "${st}u2.nc" 
 
 # Final calculations for pet
-cdo -add -mulc,0.408 -mul "${st}Delta.nc" "${st}rn.nc" "${st}pet1.nc"
+cdo -mulc,0.408 -mul "${st}Delta.nc" "${st}rn.nc" "${st}pet1.nc"
 cdo -mulc,900 -div "${st}Gamma.nc" $input_file_tas "${st}pet2.nc"
 cdo -mul "${st}u2.nc" "${st}vpd.nc" "${st}pet3.nc"
 cdo -add "${st}pet1.nc" -mul "${st}pet3.nc" "${st}pet2.nc" "${st}pet4.nc"
