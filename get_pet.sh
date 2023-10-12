@@ -66,23 +66,45 @@ rm "${st}rnlc.nc"
 rm "${st}rnlab.nc"
 rm "${st}rnl.nc"
 
-#cdo expr,'es = (esTmax + esTmin)/2' -selvar,esTmax "${st}esTmax.nc" -selvar,esTmin "${st}esTmin.nc" "${st}es.nc"
-#cdo -selvar,es "${st}es.nc" -selvar,hurs $input_file_hurs expr,'vpd = es*(1 - hurs/100)' "${st}vpd.nc"
-# cdo expr,'Delta = (4098*0.6108*exp((17.27*(tas-273.15))/((tas-273.15)+237.3)))/(((tas-273.15)+237.3)^2)' $input_file_tas $2_$1_Delta.nc
-# cdo expr,'Pr = (4098*0.6108*exp((17.27*(tas-273.15))/((tas-273.15)+237.3)))/(((tas-273.15)+237.3)^2)' $input_file_tas $2_$1_Delta.nc
+# Calculate slope of saturation vapor pressure (Delta)
+cdo expr,'Delta = (4098*0.6108*exp((17.27*tas)/(tas+237.3)))/((tas+237.3)^2)' "${st}tas.nc" "${st}Delta.nc"
+
+# Calculate psychometric constant
+cdo expr,'Pr = 101.3*((293 - 0.0065*orog)/293)^5.26' $input_file_elevation "${st}Pr.nc"
+cdo expr,'Gamma = (0.001013*Pr)/(0.622*2.45)' "${st}Pr.nc" "${st}Gamma.nc"
+
+# Calculate windspeed at 2m high
+cdo mulc,0.747132 $input_file_sfcwind "${st}u2.nc" 
+
+# Final calculations for pet
+cdo -add -mulc,0.408 -mul "${st}Delta.nc" "${st}rn.nc" "${st}pet1.nc"
+cdo -mulc,900 -div "${st}Gamma.nc" $input_file_tas "${st}pet2.nc"
+cdo -mul "${st}u2.nc" "${st}vpd.nc" "${st}pet3.nc"
+cdo -add "${st}pet1.nc" -mul "${st}pet3.nc" "${st}pet2.nc" "${st}pet4.nc"
+cdo -add "${st}Delta.nc" -mul "${st}Gamma.nc" -addc,1 -mulc,0.34 "${st}u2.nc" "${st}pet5.nc" 
+cdo div "${st}pet4.nc" "${st}pet5.nc" "${st}pet.nc"
+
+# Remove the last temporary files
+rm "${st}pet1.nc"
+rm "${st}pet2.nc"
+rm "${st}pet3.nc"
+rm "${st}pet4.nc"
+rm "${st}pet5.nc"
+rm "${st}u2.nc"
+rm "${st}Pr.nc"
+rm "${st}Gamma.nc"
+rm "${st}Delta.nc"
 
 # Loop through the years 
 for ((year = year1; year <= year2; year++)); do
 
     # Set the output filename for the current year
-    # output_file_sgdd="sgdd_$year.nc"
-    # output_file_wai="wai_$year.nc"
-    output_file_rnmean="rnmean_${year}.nc"
+    output_file_pet="pet_${year}.nc"
 
     # Use CDO to calculate sgdd and wai for the current year
-    cdo yearmean -selyear,${year} "${st}rn.nc" $output_file_rnmean
+    cdo yearsum -selyear,${year} "${st}pet.nc" $output_file_pet
 
-    echo "Generated $output_file_rnmean"
+    echo "Generated $output_file_pet"
 done
 
 echo "All annual files generated in the current directory"
@@ -93,3 +115,4 @@ rm "${st}tasmin.nc"
 rm "${st}tasmax.nc"
 rm "${st}rn.nc"
 rm "${st}vpd.nc"
+rm "${st}pet.nc"
