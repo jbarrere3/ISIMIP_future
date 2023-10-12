@@ -49,8 +49,8 @@ cdo mulc,0.77 "${st}rs.nc" "${st}rns.nc"
 # - clear-sky radiation rso (extraterrestrial radiation ra assumed constant at 188)
 cdo -mulc,118 -addc,0.75 -mulc,0.00002 $input_file_elevation "${st}rso.nc"
 # - Calculate in several terms (rnla, rnlb and rnlc) net longwave
-cdo -mulc,0.0000000024515 -add -powc,4 $input_file_tasmax -powc,4 $input_file_tasmin "${st}rnla.nc"
-cdo -addc,0.34 -mulc,-0.14 -powc,0.5 "${st}ea.nc" "${st}rnlb.nc"
+cdo -mulc,0.0000000024515 -add -pow,4 $input_file_tasmax -pow,4 $input_file_tasmin "${st}rnla.nc"
+cdo -addc,0.34 -mulc,-0.14 -pow,0.5 "${st}ea.nc" "${st}rnlb.nc"
 cdo -subc,0.35 -mulc,1.35 -div "${st}rs.nc" "${st}rso.nc" "${st}rnlc.nc"
 cdo mul "${st}rnla.nc" "${st}rnlb.nc" "${st}rnlc.nc" "${st}rnl.nc"
 # - net radiation
