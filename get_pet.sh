@@ -38,6 +38,31 @@ cdo expr,'esTmin = (0.6108*exp((17.27*tasmin)/(tasmin+237.3)))' "${st}tasmin.nc"
 cdo -divc,2 -add "${st}esTmax.nc" "${st}esTmin.nc" "${st}es.nc"
 cdo -divc,100 -mul "${st}es.nc" $input_file_hurs "${st}ea.nc"
 cdo sub "${st}es.nc" "${st}ea.nc" "${st}vpd.nc"
+rm "${st}esTmax.nc"
+rm "${st}esTmin.nc"
+rm "${st}es.nc"
+
+# Calculate net radiation
+# - net shortwave
+cdo mulc,0.0864 $input_file_rsds "${st}rs.nc"
+cdo mulc,0.77 "${st}rs.nc" "${st}rns.nc"
+# - clear-sky radiation rso (extraterrestrial radiation ra assumed constant at 188)
+cdo -mulc,118 -addc,0.75 -mulc,0.00002 $input_file_elevation "${st}rso.nc"
+# - Calculate in several terms (rnla, rnlb and rnlc) net longwave
+cdo -mulc,0.0000000024515 -add -powc,4 $input_file_tasmax -powc,4 $input_file_tasmin "${st}rnla.nc"
+cdo -addc,0.34 -mulc,-0.14 -powc,0.5 "${st}ea.nc" "${st}rnlb.nc"
+cdo -subc,0.35 -mulc,1.35 -div "${st}rs.nc" "${st}rso.nc" "${st}rnlc.nc"
+cdo mul "${st}rnla.nc" "${st}rnlb.nc" "${st}rnlc.nc" "${st}rnl.nc"
+# - net radiation
+cdo sub "${st}rns.nc" "${st}rnl.nc" "${st}rn.nc"
+# - Remove temporary files
+rm "${st}rns.nc"
+rm "${st}rso.nc"
+rm "${st}ea.nc"
+rm "${st}rnla.nc"
+rm "${st}rnlb.nc"
+rm "${st}rnlc.nc"
+rm "${st}rnl.nc"
 
 #cdo expr,'es = (esTmax + esTmin)/2' -selvar,esTmax "${st}esTmax.nc" -selvar,esTmin "${st}esTmin.nc" "${st}es.nc"
 #cdo -selvar,es "${st}es.nc" -selvar,hurs $input_file_hurs expr,'vpd = es*(1 - hurs/100)' "${st}vpd.nc"
@@ -50,14 +75,12 @@ for ((year = year1; year <= year2; year++)); do
     # Set the output filename for the current year
     # output_file_sgdd="sgdd_$year.nc"
     # output_file_wai="wai_$year.nc"
-    output_file_tmean="tmean_${year}.nc"
-    output_file_vpdmean="vpdmean_${year}.nc"
+    output_file_rnmean="rnmean_${year}.nc"
 
     # Use CDO to calculate sgdd and wai for the current year
-    cdo yearmean -selyear,${year} "${st}tas.nc" $output_file_tmean
-    cdo yearmean -selyear,${year} "${st}vpd.nc" $output_file_vpdmean
+    cdo yearmean -selyear,${year} "${st}rn.nc" $output_file_rnmean
 
-    echo "Generated $output_file_tmean and $output_file_vpdmean"
+    echo "Generated $output_file_rnmean"
 done
 
 echo "All annual files generated in the current directory"
@@ -66,8 +89,5 @@ echo "All annual files generated in the current directory"
 rm "${st}tas.nc"
 rm "${st}tasmin.nc"
 rm "${st}tasmax.nc"
-rm "${st}esTmax.nc"
-rm "${st}esTmin.nc"
-rm "${st}es.nc"
-rm "${st}ea.nc"
+rm "${st}rn.nc"
 rm "${st}vpd.nc"
