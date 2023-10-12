@@ -58,6 +58,7 @@ cdo mul "${st}rnlab.nc" "${st}rnlc.nc" "${st}rnl.nc"
 cdo sub "${st}rns.nc" "${st}rnl.nc" "${st}rn.nc"
 # - Remove temporary files
 rm "${st}rns.nc"
+rm "${st}rs.nc"
 rm "${st}rso.nc"
 rm "${st}ea.nc"
 rm "${st}rnla.nc"
@@ -95,16 +96,17 @@ rm "${st}Pr.nc"
 rm "${st}Gamma.nc"
 rm "${st}Delta.nc"
 
+# calculate degree days above 5.5
+cdo expr,'sgdd=max(tas-5.5,0)' "${st}tas.nc" "${st}gdd.nc"
+
 # Loop through the years 
 for ((year = year1; year <= year2; year++)); do
 
-    # Set the output filename for the current year
-    output_file_pet="pet_${year}.nc"
+    # Use CDO to sum pet and precipitation over each year
+    cdo yearsum -selyear,${year} "${st}pet.nc" "pet_${year}.nc"
+    cdo yearsum -selyear,${year} "${st}pr.nc" "pr_${year}.nc"
+    cdo yearsum -selyear,${year} "${st}gdd.nc" "sgdd_${year}.nc"
 
-    # Use CDO to calculate sgdd and wai for the current year
-    cdo yearsum -selyear,${year} "${st}pet.nc" $output_file_pet
-
-    echo "Generated $output_file_pet"
 done
 
 echo "All annual files generated in the current directory"
