@@ -16,7 +16,7 @@ if [ "$year2" -lt 2015 ]; then
     input_file_rsds="$2/rsds_$1.nc"
     input_file_sfcwind="$2/sfcwind_$1.nc"
     input_file_pr="$2/pr_$1.nc"
-    en = "_$2"
+    en="_$2"
 else
     input_file_tas="$2/tas_$1_$3.nc"
     input_file_tasmax="$2/tasmax_$1_$3.nc"
@@ -25,7 +25,7 @@ else
     input_file_rsds="$2/rsds_$1_$3.nc"
     input_file_sfcwind="$2/sfcwind_$1_$3.nc"
     input_file_pr="$2/pr_$1_$3.nc"
-    en = "_$2_$3"
+    en="_$2_$3"
 fi
 
 # Start of all files produced
