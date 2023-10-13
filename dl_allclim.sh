@@ -9,10 +9,13 @@ echo "Time: $(date). Begin script" >> dlclim.log
 if [ ! -d ${2} ]
   then mkdir ${2}
 fi
+if [ ! -d "${2}/data" ]
+  then mkdir "${2}/data"
+fi
 
 # Loop on all variables to download data from model $2 (historical data)
 while read variables; do
-    if [ ! -f $2/${variables}_2011_2014.nc ]
+    if [ ! -f $2/data/${variables}_2011_2014.nc ]
       then bash dl_historical.sh $variables $2 &
     fi
 done < "$1"
@@ -25,7 +28,7 @@ echo "Time: $(date). (model $2) - End download of historical data" >> dlclim.log
 while read timeperiod; do
     # Loop on all variables to download data from model $2 
     while read var; do
-        if [ ! -f $2/${var}_${timeperiod}_ssp126.nc ]
+        if [ ! -f $2/data/${var}_${timeperiod}_ssp126.nc ]
           then bash dl_climssptime.sh $var $2 ssp126 $timeperiod &
         fi
     done < "$1"
@@ -39,7 +42,7 @@ wait
 while read timeperiod; do
     # Loop on all variables to download data from model $2 
     while read var; do
-        if [ ! -f $2/${var}_${timeperiod}_ssp370.nc ]
+        if [ ! -f $2/data/${var}_${timeperiod}_ssp370.nc ]
           then bash dl_climssptime.sh $var $2 ssp370 $timeperiod &
         fi
     done < "$1"
@@ -53,7 +56,7 @@ wait
 while read timeperiod; do
     # Loop on all variables to download data from model $2 
     while read var; do
-        if [ ! -f $2/${var}_${timeperiod}_ssp585.nc ]
+        if [ ! -f $2/data/${var}_${timeperiod}_ssp585.nc ]
           then bash dl_climssptime.sh $var $2 ssp585 $timeperiod &
         fi
     done < "$1"
@@ -67,8 +70,18 @@ wait
 if [ ! -f $2/elevation.nc ]
     then 
         wget https://files.isimip.org/ISIMIP3a/SecondaryInputData/climate/atmosphere/obsclim/global/daily/historical/W5E5v2.0/orog_W5E5v2.0.nc
-        mv orog_W5E5v2.0.nc $2/elevation.nc
+        mv orog_W5E5v2.0.nc $2/data/elevation.nc
 fi
+
+# Calculate wai and pet for historical data 
+if [ ! -f $2/output/hist/wai_2011.nc ]
+    then
+        bash get_pet.sh "2011_2014" mpi-esm1-2-hr ssp126
+fi
+
+wait
+echo "Time: $(date). (model $2) - End calculation of historical sgdd and wai" >> dlclim.log
+
 
 wait
 

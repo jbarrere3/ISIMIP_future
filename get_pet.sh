@@ -130,7 +130,7 @@ for ((year = year1; year <= year2; year++)); do
 
 done
 
-echo "All annual files generated in the current directory"
+echo "All annual files generated in the directory $outdir"
 
 # remove temporary directory
 rm "${st}tas.nc"
