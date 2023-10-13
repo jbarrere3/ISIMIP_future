@@ -2,6 +2,12 @@
 
 # Arguments : 1 = time period, 2 = model, 3 = ssp scenario
 
+# Create directory for the outputs if it doesn't exist
+if [ ! -d "${2}/output" ]
+  then mkdir "${2}/output"
+fi
+
+
 # Identify the boundary years of the time period
 year1=$(echo "$1" | cut -d '_' -f 1)
 year2=$(echo "$1" | cut -d '_' -f 2)
@@ -16,7 +22,7 @@ if [ "$year2" -lt 2015 ]; then
     input_file_rsds="$2/rsds_$1.nc"
     input_file_sfcwind="$2/sfcwind_$1.nc"
     input_file_pr="$2/pr_$1.nc"
-    en="_$2"
+    en=""
 else
     input_file_tas="$2/tas_$1_$3.nc"
     input_file_tasmax="$2/tasmax_$1_$3.nc"
@@ -25,7 +31,7 @@ else
     input_file_rsds="$2/rsds_$1_$3.nc"
     input_file_sfcwind="$2/sfcwind_$1_$3.nc"
     input_file_pr="$2/pr_$1_$3.nc"
-    en="_$2_$3"
+    en="_$3"
 fi
 
 # Start of all files produced
@@ -101,20 +107,20 @@ rm "${st}Gamma.nc"
 rm "${st}Delta.nc"
 
 # calculate degree days above 5.5
-cdo -expr,'sgdd = ((tas < 0)) ? tas : 0' -subc,5.5 "${st}tas.nc" "${st}gdd.nc"
+cdo -expr,'sgdd = ((tas > 0)) ? tas : 0' -subc,5.5 "${st}tas.nc" "${st}gdd.nc"
 
 # Loop through the years 
 for ((year = year1; year <= year2; year++)); do
 
     # Use CDO to sum pet and precipitation over each year
-    cdo yearsum -selyear,${year} "${st}pet.nc" "pet_${year}${en}.nc"
-    cdo yearsum -selyear,${year} $input_file_pr "pr_${year}${en}.nc"
-    cdo yearsum -selyear,${year} "${st}gdd.nc" "sgdd_${year}${en}.nc"
-    cdo -div -sub -mulc,86400 "pr_${year}${en}.nc" "pet_${year}${en}.nc" "pet_${year}${en}.nc" "wai_${year}${en}.nc" 
+    cdo yearsum -selyear,${year} "${st}pet.nc" "${2}/output/pet_${year}${en}.nc"
+    cdo yearsum -selyear,${year} $input_file_pr "${2}/output/pr_${year}${en}.nc"
+    cdo yearsum -selyear,${year} "${st}gdd.nc" "${2}/output/sgdd_${year}${en}.nc"
+    cdo -div -sub -mulc,86400 "${2}/output/pr_${year}${en}.nc" "${2}/output/pet_${year}${en}.nc" "${2}/output/pet_${year}${en}.nc" "${2}/output/wai_${year}${en}.nc" 
 
     # Remove temporary files
-    rm "pet_${year}${en}.nc"
-    rm "pr_${year}${en}.nc"
+    rm "${2}/output/pet_${year}${en}.nc"
+    rm "${2}/output/pr_${year}${en}.nc"
 
 done
 
