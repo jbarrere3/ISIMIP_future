@@ -67,7 +67,7 @@ done < "$3"
 wait
 
 # Download altitude data
-if [ ! -f $2/elevation.nc ]
+if [ ! -f $2/data/elevation.nc ]
     then 
         wget https://files.isimip.org/ISIMIP3a/SecondaryInputData/climate/atmosphere/obsclim/global/daily/historical/W5E5v2.0/orog_W5E5v2.0.nc
         mv orog_W5E5v2.0.nc $2/data/elevation.nc
@@ -82,21 +82,17 @@ fi
 wait
 echo "Time: $(date). (model $2) - End calculation of historical sgdd and wai" >> dlclim.log
 
-bash get_pet.sh "2015_2020" $2 ssp126
-
 # Loop on all time periods to calculate future sgdd and wai from model $2, ssp126
-# while read timeperiod; do
-#     # Loop on all variables to download data from model $2 
-#     while read var; do
-#         year1=$(echo "$timeperiod" | cut -d '_' -f 1)
-#         if [ ! -f $2/output/ssp126/wai_${year1}.nc ]
-#           then bash get_pet.sh $timeperiod $2 ssp126 &
-#         fi
-#     done < "$1"
-#     wait
-#     echo "Time: $(date). (model $2) - End calculation of future sgdd and wai with ssp585, $timeperiod" >> dlclim.log
-# done < "$3"
+while read timeperiod; do
+    # Identify the first year of the time period
+    year1=$(echo "$timeperiod" | cut -d '_' -f 1)
+    # If wai and sgdd already downloaded, don't do anything
+    if [ ! -f $2/output/ssp126/wai_${year1}.nc ]
+      then bash get_pet.sh $timeperiod $2 ssp126 &
+    fi
+done < "$3"
 
 wait
+echo "Time: $(date). (model $2) - End calculation of future sgdd and wai with ssp585" >> dlclim.log
 
 echo "Time: $(date). End script" >> dlclim.log
