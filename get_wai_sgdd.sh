@@ -122,14 +122,15 @@ for ((year = year1; year <= year2; year++)); do
     cdo yearsum -selyear,${year} "${st}pet.nc" "${st}pet_${year}.nc"
     cdo yearsum -selyear,${year} $input_file_pr "${st}pr_${year}.nc"
     # From annual pet and pr, calculate wai
-    cdo -div -sub -mulc,86400 "${st}pr_${year}.nc" "${st}pet_${year}.nc" "${st}pet_${year}.nc" "$outdir/wai_${year}.nc" 
+    cdo -div -sub -mulc,86400 "${st}pr_${year}.nc" "${st}pet_${year}.nc" "${st}pet_${year}.nc" "$outdir/wai${year}.nc" 
     # Change variable name of the wai netcdf
-    ncrename -v pr,wai "$outdir/wai_${year}.nc" "$outdir/wai_${year}.nc"
+    ncrename -v pr,wai "$outdir/wai${year}.nc" "$outdir/wai_${year}.nc"
     # Calculate sgdd 
     cdo yearsum -selyear,${year} "${st}gdd.nc" "$outdir/sgdd_${year}.nc"
     # Remove temporary files
     rm "${st}pet_${year}.nc"
     rm "${st}pr_${year}.nc"
+    rm "$outdir/wai${year}.nc"
 
 done
 

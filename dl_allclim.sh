@@ -76,7 +76,7 @@ fi
 # Calculate wai and pet for historical data 
 if [ ! -f $2/output/hist/wai_2011.nc ]
     then
-        bash get_pet.sh "2011_2014" $2 ssp126
+        bash get_wai_sgdd.sh "2011_2014" $2 ssp126
 fi
 
 wait
@@ -88,11 +88,39 @@ while read timeperiod; do
     year1=$(echo "$timeperiod" | cut -d '_' -f 1)
     # If wai and sgdd already downloaded, don't do anything
     if [ ! -f $2/output/ssp126/wai_${year1}.nc ]
-      then bash get_pet.sh $timeperiod $2 ssp126 &
+      then bash get_wai_sgdd.sh $timeperiod $2 ssp126 &
+    fi
+done < "$3"
+
+wait
+echo "Time: $(date). (model $2) - End calculation of future sgdd and wai with ssp126" >> dlclim.log
+
+# Loop on all time periods to calculate future sgdd and wai from model $2, ssp370
+while read timeperiod; do
+    # Identify the first year of the time period
+    year1=$(echo "$timeperiod" | cut -d '_' -f 1)
+    # If wai and sgdd already downloaded, don't do anything
+    if [ ! -f $2/output/ssp370/wai_${year1}.nc ]
+      then bash get_wai_sgdd.sh $timeperiod $2 ssp370 &
+    fi
+done < "$3"
+
+wait
+echo "Time: $(date). (model $2) - End calculation of future sgdd and wai with ssp370" >> dlclim.log
+
+
+# Loop on all time periods to calculate future sgdd and wai from model $2, ssp585
+while read timeperiod; do
+    # Identify the first year of the time period
+    year1=$(echo "$timeperiod" | cut -d '_' -f 1)
+    # If wai and sgdd already downloaded, don't do anything
+    if [ ! -f $2/output/ssp585/wai_${year1}.nc ]
+      then bash get_wai_sgdd.sh $timeperiod $2 ssp585 &
     fi
 done < "$3"
 
 wait
 echo "Time: $(date). (model $2) - End calculation of future sgdd and wai with ssp585" >> dlclim.log
+
 
 echo "Time: $(date). End script" >> dlclim.log
