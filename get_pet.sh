@@ -14,24 +14,24 @@ year1=$(echo "$1" | cut -d '_' -f 1)
 year2=$(echo "$1" | cut -d '_' -f 2)
 
 # Set the input NetCDF file and the output files
-input_file_elevation="$2/elevation.nc"
+input_file_elevation="$2/data/elevation.nc"
 if [ "$year2" -lt 2015 ]; then
-    input_file_tas="$2/tas_$1.nc"
-    input_file_tasmax="$2/tasmax_$1.nc"
-    input_file_tasmin="$2/tasmin_$1.nc"
-    input_file_hurs="$2/hurs_$1.nc"
-    input_file_rsds="$2/rsds_$1.nc"
-    input_file_sfcwind="$2/sfcwind_$1.nc"
-    input_file_pr="$2/pr_$1.nc"
+    input_file_tas="$2/data/tas_$1.nc"
+    input_file_tasmax="$2/data/tasmax_$1.nc"
+    input_file_tasmin="$2/data/tasmin_$1.nc"
+    input_file_hurs="$2/data/hurs_$1.nc"
+    input_file_rsds="$2/data/rsds_$1.nc"
+    input_file_sfcwind="$2/data/sfcwind_$1.nc"
+    input_file_pr="$2/data/pr_$1.nc"
     outdir="${2}/output/hist"
 else
-    input_file_tas="$2/tas_$1_$3.nc"
-    input_file_tasmax="$2/tasmax_$1_$3.nc"
-    input_file_tasmin="$2/tasmin_$1_$3.nc"
-    input_file_hurs="$2/hurs_$1_$3.nc"
-    input_file_rsds="$2/rsds_$1_$3.nc"
-    input_file_sfcwind="$2/sfcwind_$1_$3.nc"
-    input_file_pr="$2/pr_$1_$3.nc"
+    input_file_tas="$2/data/tas_$1_$3.nc"
+    input_file_tasmax="$2/data/tasmax_$1_$3.nc"
+    input_file_tasmin="$2/data/tasmin_$1_$3.nc"
+    input_file_hurs="$2/data/hurs_$1_$3.nc"
+    input_file_rsds="$2/data/rsds_$1_$3.nc"
+    input_file_sfcwind="$2/data/sfcwind_$1_$3.nc"
+    input_file_pr="$2/data/pr_$1_$3.nc"
     outdir="${2}/output/${3}"
 fi
 
