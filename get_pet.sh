@@ -15,6 +15,7 @@ if [ "$year2" -lt 2015 ]; then
     input_file_hurs="$2/hurs_$1.nc"
     input_file_rsds="$2/rsds_$1.nc"
     input_file_sfcwind="$2/sfcwind_$1.nc"
+    input_file_pr="$2/pr_$1.nc"
 else
     input_file_tas="$2/tas_$1_$3.nc"
     input_file_tasmax="$2/tasmax_$1_$3.nc"
@@ -22,6 +23,7 @@ else
     input_file_hurs="$2/hurs_$1_$3.nc"
     input_file_rsds="$2/rsds_$1_$3.nc"
     input_file_sfcwind="$2/sfcwind_$1_$3.nc"
+    input_file_pr="$2/pr_$1_$3.nc"
 fi
 
 # Start of all files produced
@@ -104,8 +106,13 @@ for ((year = year1; year <= year2; year++)); do
 
     # Use CDO to sum pet and precipitation over each year
     cdo yearsum -selyear,${year} "${st}pet.nc" "pet_${year}.nc"
-    cdo yearsum -selyear,${year} "${st}pr.nc" "pr_${year}.nc"
+    cdo yearsum -selyear,${year} $input_file_pr "pr_${year}.nc"
     cdo yearsum -selyear,${year} "${st}gdd.nc" "sgdd_${year}.nc"
+    cdo -div -sub "pr_${year}.nc" "pet_${year}.nc" "pet_${year}.nc" "wai_${year}.nc" 
+
+    # Remove temporary files
+    rm "pet_${year}.nc"
+    rm "pr_${year}.nc"
 
 done
 
@@ -118,3 +125,4 @@ rm "${st}tasmax.nc"
 rm "${st}rn.nc"
 rm "${st}vpd.nc"
 rm "${st}pet.nc"
+rm "${st}gdd.nc"
