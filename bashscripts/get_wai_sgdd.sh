@@ -115,6 +115,13 @@ rm "${st}Delta.nc"
 # calculate degree days above 5.5
 cdo -expr,'sgdd = ((tas > 0)) ? tas : 0' -subc,5.5 "${st}tas.nc" "${st}gdd.nc"
 
+# remove temporary directory
+rm "${st}tas.nc"
+rm "${st}tasmin.nc"
+rm "${st}tasmax.nc"
+rm "${st}rn.nc"
+rm "${st}vpd.nc"
+
 # Loop through the years 
 for ((year = year1; year <= year2; year++)); do
 
@@ -137,10 +144,5 @@ done
 echo "All annual files generated in the directory $outdir"
 
 # remove temporary directory
-rm "${st}tas.nc"
-rm "${st}tasmin.nc"
-rm "${st}tasmax.nc"
-rm "${st}rn.nc"
-rm "${st}vpd.nc"
 rm "${st}pet.nc"
 rm "${st}gdd.nc"
