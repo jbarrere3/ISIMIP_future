@@ -6,7 +6,7 @@ Several climatic models are available in ISIMIP ([gdfl-esm4](https://www.gfdl.no
 [ukesm1-0-ll](https://ukesm.ac.uk/wp-content/uploads/2022/06/UKESM1-0-LL.html)). To download historical and future (scenario ssp127, ssp370 and ssp585) for a given model (e.g., mpi-esm1-2-hr), 
 just run the following command from the terminal : 
 
-```bash dl_allclim.sh var.csv mpi-esm1-2-hr time_future.csv```
+```bash main.sh var.csv mpi-esm1-2-hr time_future.csv```
 
 The script will create a folder named after the model and place all data cropped at European level in this folder. 
 

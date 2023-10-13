@@ -16,7 +16,7 @@ fi
 # Loop on all variables to download data from model $2 (historical data)
 while read variables; do
     if [ ! -f $2/data/${variables}_2011_2014.nc ]
-      then bash dl_historical.sh $variables $2 &
+      then bash bashscripts/dl_historical.sh $variables $2 &
     fi
 done < "$1"
 
@@ -29,7 +29,7 @@ while read timeperiod; do
     # Loop on all variables to download data from model $2 
     while read var; do
         if [ ! -f $2/data/${var}_${timeperiod}_ssp126.nc ]
-          then bash dl_climssptime.sh $var $2 ssp126 $timeperiod &
+          then bash bashscripts/dl_climssptime.sh $var $2 ssp126 $timeperiod &
         fi
     done < "$1"
     wait
@@ -43,7 +43,7 @@ while read timeperiod; do
     # Loop on all variables to download data from model $2 
     while read var; do
         if [ ! -f $2/data/${var}_${timeperiod}_ssp370.nc ]
-          then bash dl_climssptime.sh $var $2 ssp370 $timeperiod &
+          then bash bashscripts/dl_climssptime.sh $var $2 ssp370 $timeperiod &
         fi
     done < "$1"
     wait
@@ -57,7 +57,7 @@ while read timeperiod; do
     # Loop on all variables to download data from model $2 
     while read var; do
         if [ ! -f $2/data/${var}_${timeperiod}_ssp585.nc ]
-          then bash dl_climssptime.sh $var $2 ssp585 $timeperiod &
+          then bash bashscripts/dl_climssptime.sh $var $2 ssp585 $timeperiod &
         fi
     done < "$1"
     wait
@@ -76,7 +76,7 @@ fi
 # Calculate wai and pet for historical data 
 if [ ! -f $2/output/hist/wai_2011.nc ]
     then
-        bash get_wai_sgdd.sh "2011_2014" $2 ssp126
+        bash bashscripts/get_wai_sgdd.sh "2011_2014" $2 ssp126
 fi
 
 wait
@@ -88,7 +88,7 @@ while read timeperiod; do
     year1=$(echo "$timeperiod" | cut -d '_' -f 1)
     # If wai and sgdd already downloaded, don't do anything
     if [ ! -f $2/output/ssp126/wai_${year1}.nc ]
-      then bash get_wai_sgdd.sh $timeperiod $2 ssp126 &
+      then bash bashscripts/get_wai_sgdd.sh $timeperiod $2 ssp126 &
     fi
 done < "$3"
 
@@ -101,7 +101,7 @@ while read timeperiod; do
     year1=$(echo "$timeperiod" | cut -d '_' -f 1)
     # If wai and sgdd already downloaded, don't do anything
     if [ ! -f $2/output/ssp370/wai_${year1}.nc ]
-      then bash get_wai_sgdd.sh $timeperiod $2 ssp370 &
+      then bash bashscripts/get_wai_sgdd.sh $timeperiod $2 ssp370 &
     fi
 done < "$3"
 
@@ -115,7 +115,7 @@ while read timeperiod; do
     year1=$(echo "$timeperiod" | cut -d '_' -f 1)
     # If wai and sgdd already downloaded, don't do anything
     if [ ! -f $2/output/ssp585/wai_${year1}.nc ]
-      then bash get_wai_sgdd.sh $timeperiod $2 ssp585 &
+      then bash bashscripts/get_wai_sgdd.sh $timeperiod $2 ssp585 &
     fi
 done < "$3"
 
