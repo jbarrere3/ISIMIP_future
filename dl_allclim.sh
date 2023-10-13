@@ -76,12 +76,24 @@ fi
 # Calculate wai and pet for historical data 
 if [ ! -f $2/output/hist/wai_2011.nc ]
     then
-        bash get_pet.sh "2011_2014" mpi-esm1-2-hr ssp126
+        bash get_pet.sh "2011_2014" $2 ssp126
 fi
 
 wait
 echo "Time: $(date). (model $2) - End calculation of historical sgdd and wai" >> dlclim.log
 
+# Loop on all time periods to calculate future sgdd and wai from model $2, ssp126
+while read timeperiod; do
+    # Loop on all variables to download data from model $2 
+    while read var; do
+        year1=$(echo "$timeperiod" | cut -d '_' -f 1)
+        if [ ! -f $2/output/ssp126/wai_${year1}.nc ]
+          then bash get_pet.sh $timeperiod $2 ssp126 &
+        fi
+    done < "$1"
+    wait
+    echo "Time: $(date). (model $2) - End calculation of future sgdd and wai with ssp585, $timeperiod" >> dlclim.log
+done < "$3"
 
 wait
 
