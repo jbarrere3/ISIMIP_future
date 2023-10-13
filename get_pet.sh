@@ -2,6 +2,7 @@
 
 # Arguments : 1 = time period, 2 = model, 3 = ssp scenario
 
+
 # Create directory for the outputs if it doesn't exist
 if [ ! -d "${2}/output" ]
   then mkdir "${2}/output"
@@ -22,7 +23,7 @@ if [ "$year2" -lt 2015 ]; then
     input_file_rsds="$2/rsds_$1.nc"
     input_file_sfcwind="$2/sfcwind_$1.nc"
     input_file_pr="$2/pr_$1.nc"
-    en=""
+    outdir="${2}/output/hist"
 else
     input_file_tas="$2/tas_$1_$3.nc"
     input_file_tasmax="$2/tasmax_$1_$3.nc"
@@ -31,7 +32,12 @@ else
     input_file_rsds="$2/rsds_$1_$3.nc"
     input_file_sfcwind="$2/sfcwind_$1_$3.nc"
     input_file_pr="$2/pr_$1_$3.nc"
-    en="_$3"
+    outdir="${2}/output/${3}"
+fi
+
+# Create directory for the outputs if it doesn't exist
+if [ ! -d $outdir ]
+  then mkdir $outdir
 fi
 
 # Start of all files produced
@@ -113,14 +119,14 @@ cdo -expr,'sgdd = ((tas > 0)) ? tas : 0' -subc,5.5 "${st}tas.nc" "${st}gdd.nc"
 for ((year = year1; year <= year2; year++)); do
 
     # Use CDO to sum pet and precipitation over each year
-    cdo yearsum -selyear,${year} "${st}pet.nc" "${2}/output/pet_${year}${en}.nc"
-    cdo yearsum -selyear,${year} $input_file_pr "${2}/output/pr_${year}${en}.nc"
-    cdo yearsum -selyear,${year} "${st}gdd.nc" "${2}/output/sgdd_${year}${en}.nc"
-    cdo -div -sub -mulc,86400 "${2}/output/pr_${year}${en}.nc" "${2}/output/pet_${year}${en}.nc" "${2}/output/pet_${year}${en}.nc" "${2}/output/wai_${year}${en}.nc" 
+    cdo yearsum -selyear,${year} "${st}pet.nc" "${st}pet_${year}.nc"
+    cdo yearsum -selyear,${year} $input_file_pr "${st}pr_${year}.nc"
+    cdo yearsum -selyear,${year} "${st}gdd.nc" "$outdir/sgdd_${year}.nc"
+    cdo -div -sub -mulc,86400 "${st}pr_${year}.nc" "${st}pet_${year}.nc" "${st}pet_${year}.nc" "$outdir/wai_${year}.nc" 
 
     # Remove temporary files
-    rm "${2}/output/pet_${year}${en}.nc"
-    rm "${2}/output/pr_${year}${en}.nc"
+    rm "${st}pet_${year}.nc"
+    rm "${st}pr_${year}.nc"
 
 done
 
