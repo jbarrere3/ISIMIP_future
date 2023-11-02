@@ -88,6 +88,10 @@ while read timeperiodhist; do
     if [ ! -f $2/output/hist/wai_${year1}.nc ]
       then bash bashscripts/get_wai_sgdd.sh $timeperiodhist $2 ssp126 &
     fi
+    # If max windspeed already downloaded, don't do anything
+    if [ ! -f $2/output/hist/u2max_${year1}.nc ]
+      then bash bashscripts/get_maxwind.sh $timeperiod $2 ssp126 &
+    fi
 done < "$4"
 
 wait
@@ -100,6 +104,10 @@ while read timeperiod; do
     # If wai and sgdd already downloaded, don't do anything
     if [ ! -f $2/output/ssp126/wai_${year1}.nc ]
       then bash bashscripts/get_wai_sgdd.sh $timeperiod $2 ssp126 &
+    fi
+    # If max windspeed already downloaded, don't do anything
+    if [ ! -f $2/output/ssp126/u2max_${year1}.nc ]
+      then bash bashscripts/get_maxwind.sh $timeperiod $2 ssp126 &
     fi
 done < "$3"
 
@@ -114,6 +122,10 @@ while read timeperiod; do
     if [ ! -f $2/output/ssp370/wai_${year1}.nc ]
       then bash bashscripts/get_wai_sgdd.sh $timeperiod $2 ssp370 &
     fi
+    # If max windspeed already downloaded, don't do anything
+    if [ ! -f $2/output/ssp370/u2max_${year1}.nc ]
+      then bash bashscripts/get_maxwind.sh $timeperiod $2 ssp370 &
+    fi
 done < "$3"
 
 wait
@@ -127,6 +139,10 @@ while read timeperiod; do
     # If wai and sgdd already downloaded, don't do anything
     if [ ! -f $2/output/ssp585/wai_${year1}.nc ]
       then bash bashscripts/get_wai_sgdd.sh $timeperiod $2 ssp585 &
+    fi
+    # If max windspeed already downloaded, don't do anything
+    if [ ! -f $2/output/ssp585/u2max_${year1}.nc ]
+      then bash bashscripts/get_maxwind.sh $timeperiod $2 ssp585 &
     fi
 done < "$3"
 
