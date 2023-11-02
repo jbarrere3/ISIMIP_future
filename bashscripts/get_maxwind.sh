@@ -38,12 +38,18 @@ cdo mulc,0.747132 $input_file_sfcwind "${st}U2.nc"
 # Loop through the years 
 for ((year = year1; year <= year2; year++)); do
 
-    # Use CDO to sum pet and precipitation over each year
-    cdo yearpctl,95 -selyear,${year} "${st}U2.nc" "$outdir/u2max_${year}.nc"
+    # Subset windspeed for this year only
+    cdo -selyear,${year} "${st}U2.nc" "${st}U2_${year}.nc"
+
+    # Use CDO to calculate 95% quantile
+    cdo yearpctl,95 "${st}U2_${year}.nc" -yearmin "${st}U2_${year}.nc" -yearmax "${st}U2_${year}.nc" "$outdir/u2max_${year}.nc"
 
     # Remove temporary file
-    rm "${st}U2.nc"
+    rm "${st}U2_${year}.nc"
 
 done
+
+# Remove temporary file
+rm "${st}U2.nc"
 
 echo "All annual files generated in the directory $outdir"
