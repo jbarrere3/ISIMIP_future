@@ -120,7 +120,6 @@ rm "${st}tas.nc"
 rm "${st}tasmin.nc"
 rm "${st}tasmax.nc"
 rm "${st}rn.nc"
-rm "${st}vpd.nc"
 
 # Loop through the years 
 for ((year = year1; year <= year2; year++)); do
@@ -134,6 +133,8 @@ for ((year = year1; year <= year2; year++)); do
     ncrename -v pr,wai "$outdir/wai${year}.nc" "$outdir/wai_${year}.nc"
     # Calculate sgdd 
     cdo yearsum -selyear,${year} "${st}gdd.nc" "$outdir/sgdd_${year}.nc"
+    # Calculate mean vpd over summer months
+    cdo yearmean -selyear,${year} -selmon,6/7/8 "${st}vpd.nc" "$outdir/vpd_${year}.nc"
     # Remove temporary files
     rm "${st}pet_${year}.nc"
     rm "${st}pr_${year}.nc"
@@ -146,3 +147,4 @@ echo "All annual files generated in the directory $outdir"
 # remove temporary directory
 rm "${st}pet.nc"
 rm "${st}gdd.nc"
+rm "${st}vpd.nc"

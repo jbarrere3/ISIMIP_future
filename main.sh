@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Arguments : 1 = csv file with all variables, 2 = model for which to extract data, 3 = csv file with future time periods
+# Arguments : 1 = csv file with all variables, 2 = model for which to extract data, 
+#             3 = csv file with future time periods, 4 = csv file with historical time periods
 
 # Inform the log file
 echo "Time: $(date). Begin script" >> dlclim.log
@@ -14,11 +15,16 @@ if [ ! -d "${2}/data" ]
 fi
 
 # Loop on all variables to download data from model $2 (historical data)
-while read variables; do
-    if [ ! -f $2/data/${variables}_2011_2014.nc ]
-      then bash bashscripts/dl_historical.sh $variables $2 &
-    fi
-done < "$1"
+while read timeperiodhist; do
+    # Loop on all variables to download data from model $2 
+    while read variables; do
+        if [ ! -f $2/data/${variables}_$timeperiodhist.nc ]
+          then bash bashscripts/dl_historical.sh $variables $2 $timeperiodhist &
+        fi
+    done < "$1"
+    wait
+    echo "Time: $(date). (model $2) - End download of $timeperiodhist" >> dlclim.log
+done < "$4"
 
 wait
 
@@ -74,10 +80,15 @@ if [ ! -f $2/data/elevation.nc ]
 fi
 
 # Calculate wai and pet for historical data 
-if [ ! -f $2/output/hist/wai_2011.nc ]
-    then
-        bash bashscripts/get_wai_sgdd.sh "2011_2014" $2 ssp126
-fi
+# Loop on all time periods to calculate future sgdd and wai from model $2, ssp126
+while read timeperiodhist; do
+    # Identify the first year of the time period
+    year1=$(echo "$timeperiodhist" | cut -d '_' -f 1)
+    # If wai and sgdd already downloaded, don't do anything
+    if [ ! -f $2/output/hist/wai_${year1}.nc ]
+      then bash bashscripts/get_wai_sgdd.sh $timeperiodhist $2 ssp126 &
+    fi
+done < "$4"
 
 wait
 echo "Time: $(date). (model $2) - End calculation of historical sgdd and wai" >> dlclim.log
