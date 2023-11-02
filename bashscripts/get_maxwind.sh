@@ -39,7 +39,7 @@ cdo mulc,0.747132 $input_file_sfcwind "${st}U2.nc"
 for ((year = year1; year <= year2; year++)); do
 
     # Use CDO to sum pet and precipitation over each year
-    cdo yquantile,95 -selyear,${year} "${st}U2.nc" "$outdir/u2max_${year}.nc"
+    cdo yearpctl,95 -selyear,${year} "${st}U2.nc" "$outdir/u2max_${year}.nc"
 
     # Remove temporary file
     rm "${st}U2.nc"
