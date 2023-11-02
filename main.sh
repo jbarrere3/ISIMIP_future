@@ -90,7 +90,7 @@ while read timeperiodhist; do
     fi
     # If max windspeed already downloaded, don't do anything
     if [ ! -f $2/output/hist/u2max_${year1}.nc ]
-      then bash bashscripts/get_maxwind.sh $timeperiod $2 ssp126 &
+      then bash bashscripts/get_maxwind.sh $timeperiodhist $2 ssp126 &
     fi
 done < "$4"
 
