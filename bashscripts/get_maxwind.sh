@@ -16,10 +16,10 @@ year2=$(echo "$1" | cut -d '_' -f 2)
 # Set the input NetCDF file and the output files
 input_file_elevation="$2/data/elevation.nc"
 if [ "$year2" -lt 2015 ]; then
-    input_file_sfcwind="$2/data/sfcwind_$1.nc"
+    input_file_sfcwind="$2/data/sfcwind_${1}.nc"
     outdir="${2}/output/hist"
 else
-    input_file_sfcwind="$2/data/sfcwind_$1_$3.nc"
+    input_file_sfcwind="$2/data/sfcwind_${1}_${3}.nc"
     outdir="${2}/output/${3}"
 fi
 
