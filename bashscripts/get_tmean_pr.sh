@@ -33,12 +33,15 @@ fi
 # Start of all files produced
 st="${2}_${1}_${3}_"
 
+# Convert temperature in degree celsius
+cdo subc,273.15 $input_file_tas "${st}tas.nc"
+
 # Loop through the years 
 for ((year = year1; year <= year2; year++)); do
 
     # Subset temperature a,d precipitation for this year only
-    cdo yearsum subc,273.15 -selyear,${year} $input_file_tas "$outdir/tmean_${year}.nc"
-    cdo yearmean -selyear,${year} $input_file_pr "$outdir/pr_${year}.nc"
+    cdo yearmean -selyear,${year} "${st}tas.nc" "$outdir/tmean_${year}.nc"
+    cdo yearsum -selyear,${year} $input_file_pr "$outdir/pr_${year}.nc"
 done
 
 echo "All annual files generated in the directory $outdir"
