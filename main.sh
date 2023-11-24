@@ -79,14 +79,18 @@ if [ ! -f $2/data/elevation.nc ]
         mv orog_W5E5v2.0.nc $2/data/elevation.nc
 fi
 
-# Calculate tmean for historical data 
+# Calculate wai and pet for historical data 
 # Loop on all time periods to calculate future sgdd and wai from model $2, ssp126
 while read timeperiodhist; do
     # Identify the first year of the time period
     year1=$(echo "$timeperiodhist" | cut -d '_' -f 1)
-    # If max tmean already downloaded, don't do anything
-    if [ ! -f $2/output/hist/tmean_${year1}.nc ]
-      then bash bashscripts/get_tmean_pr.sh $timeperiodhist $2 ssp126 &
+    # If wai and sgdd already downloaded, don't do anything
+    if [ ! -f $2/output/hist/wai_${year1}.nc ]
+      then bash bashscripts/get_wai_sgdd.sh $timeperiodhist $2 ssp126 &
+    fi
+    # If max windspeed already downloaded, don't do anything
+    if [ ! -f $2/output/hist/u2max_${year1}.nc ]
+      then bash bashscripts/get_maxwind.sh $timeperiodhist $2 ssp126 &
     fi
 done < "$4"
 
@@ -97,9 +101,13 @@ echo "Time: $(date). (model $2) - End calculation of historical sgdd and wai" >>
 while read timeperiod; do
     # Identify the first year of the time period
     year1=$(echo "$timeperiod" | cut -d '_' -f 1)
-    # If max tmean and pr already downloaded, don't do anything
-    if [ ! -f $2/output/ssp126/tmean_${year1}.nc ]
-      then bash bashscripts/get_tmean_pr.sh $timeperiod $2 ssp126 &
+    # If wai and sgdd already downloaded, don't do anything
+    if [ ! -f $2/output/ssp126/wai_${year1}.nc ]
+      then bash bashscripts/get_wai_sgdd.sh $timeperiod $2 ssp126 &
+    fi
+    # If max windspeed already downloaded, don't do anything
+    if [ ! -f $2/output/ssp126/u2max_${year1}.nc ]
+      then bash bashscripts/get_maxwind.sh $timeperiod $2 ssp126 &
     fi
 done < "$3"
 
@@ -110,9 +118,13 @@ echo "Time: $(date). (model $2) - End calculation of future sgdd and wai with ss
 while read timeperiod; do
     # Identify the first year of the time period
     year1=$(echo "$timeperiod" | cut -d '_' -f 1)
-    # If max tmean and pr already downloaded, don't do anything
-    if [ ! -f $2/output/ssp370/tmean_${year1}.nc ]
-      then bash bashscripts/get_tmean_pr.sh $timeperiod $2 ssp370 &
+    # If wai and sgdd already downloaded, don't do anything
+    if [ ! -f $2/output/ssp370/wai_${year1}.nc ]
+      then bash bashscripts/get_wai_sgdd.sh $timeperiod $2 ssp370 &
+    fi
+    # If max windspeed already downloaded, don't do anything
+    if [ ! -f $2/output/ssp370/u2max_${year1}.nc ]
+      then bash bashscripts/get_maxwind.sh $timeperiod $2 ssp370 &
     fi
 done < "$3"
 
@@ -124,9 +136,13 @@ echo "Time: $(date). (model $2) - End calculation of future sgdd and wai with ss
 while read timeperiod; do
     # Identify the first year of the time period
     year1=$(echo "$timeperiod" | cut -d '_' -f 1)
-    # If max tmean and pr already downloaded, don't do anything
-    if [ ! -f $2/output/ssp585/tmean_${year1}.nc ]
-      then bash bashscripts/get_tmean_pr.sh $timeperiod $2 ssp585 &
+    # If wai and sgdd already downloaded, don't do anything
+    if [ ! -f $2/output/ssp585/wai_${year1}.nc ]
+      then bash bashscripts/get_wai_sgdd.sh $timeperiod $2 ssp585 &
+    fi
+    # If max windspeed already downloaded, don't do anything
+    if [ ! -f $2/output/ssp585/u2max_${year1}.nc ]
+      then bash bashscripts/get_maxwind.sh $timeperiod $2 ssp585 &
     fi
 done < "$3"
 
